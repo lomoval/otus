@@ -1,0 +1,409 @@
+{
+	"info": {
+		"_postman_id": "6d71ed5a-4274-416c-8b88-19566cede360",
+		"name": "users-service-tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1b978f55-9260-479d-a27b-2cb63ab45bd1",
+						"exec": [
+							"pm.test(\"Should create user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.CreateUser).to.be.an('object');",
+							"    pm.environment.set(\"userId\", jsonData.data.CreateUser.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"mutation ($firstName: String! $lastName: String! $email: String! $phone: String) { CreateUser(firstName: $firstName lastName: $lastName email: $email phone: $phone) { id } }\",\n  \"variables\": {\n  \t\"firstName\": \"firstName\", \n  \t\"lastName\": \"lastname\", \n  \t\"email\": \"email@mail.ru\",\n  \t\"phone\": \"+7921111111\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check user after create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7cefe92b-f52d-4ee9-8272-aea6e6c997d3",
+						"exec": [
+							"pm.test(\"Should find created user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.User.length).to.eql(1);",
+							"    let user = jsonData.data.User[0]; ",
+							"    pm.expect(user.firstName).to.eql('firstName');",
+							"    pm.expect(user.lastName).to.eql('lastname');",
+							"    pm.expect(user.email).to.eql('email@mail.ru');",
+							"    pm.expect(user.phone).to.eql('+7921111111');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"query ($id: ID) { User(id: $id) { firstName lastName email phone } }\",\n  \"variables\": {\"id\": \"{{userId}}\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f70b124a-f3ec-4f1f-af74-93539b145fd5",
+						"exec": [
+							"pm.test(\"Should update user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.UpdateUser).to.be.an('object');",
+							"    pm.expect(jsonData.data.UpdateUser.id).to.equal(pm.environment.get(\"userId\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"mutation ($id: ID! $firstName: String $lastName: String $email: String! $phone: String) { UpdateUser( id: $id firstName: $firstName lastName: $lastName email: $email phone: $phone) { id } }\",\n  \"variables\": {\n  \t\"id\": \"{{userId}}\",\n  \t\"firstName\": \"updFirstName\", \n  \t\"lastName\": \"updLastname\", \n  \t\"email\": \"updEmail@mail.ru\",\n  \t\"phone\": \"+7921222222\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check user after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5ae63738-f9ff-4e3e-b1cd-faa9793bb029",
+						"exec": [
+							"pm.test(\"Should find updated user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.User.length).to.eql(1);",
+							"    let user = jsonData.data.User[0]; ",
+							"    pm.expect(user.firstName).to.eql('updFirstName');",
+							"    pm.expect(user.lastName).to.eql('updLastname');",
+							"    pm.expect(user.email).to.eql('updEmail@mail.ru');",
+							"    pm.expect(user.phone).to.eql('+7921222222');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"query ($id: ID) { User(id: $id) { firstName lastName email phone } }\",\n  \"variables\": {\"id\": \"{{userId}}\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user with incorrect email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "810b479a-b252-404d-a176-8f40efc7f159",
+						"exec": [
+							"pm.test(\"Should not update user with incorrect email\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errors.length).to.eql(1);",
+							"    let error = jsonData.errors[0]; ",
+							"    pm.expect(error.extensions.code).to.eql('BAD_USER_INPUT');",
+							"    pm.expect(error.extensions.invalidArgs).to.eql('upd2Email<bobik>mail.ru');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"mutation ($id: ID! $firstName: String $lastName: String $email: String! $phone: String) { UpdateUser( id: $id firstName: $firstName lastName: $lastName email: $email phone: $phone) { id } }\",\n  \"variables\": {\n  \t\"id\": \"{{userId}}\",\n  \t\"firstName\": \"upd2FirstName\", \n  \t\"lastName\": \"upd2Lastname\", \n  \t\"email\": \"upd2Email<bobik>mail.ru\",\n  \t\"phone\": \"+7921333333\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check user after incorrect update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ea3bd3da-0cac-47cc-b345-6257e2e73aa6",
+						"exec": [
+							"pm.test(\"Should find updated user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.User.length).to.eql(1);",
+							"    let user = jsonData.data.User[0]; ",
+							"    pm.expect(user.firstName).to.eql('updFirstName');",
+							"    pm.expect(user.lastName).to.eql('updLastname');",
+							"    pm.expect(user.email).to.eql('updEmail@mail.ru');",
+							"    pm.expect(user.phone).to.eql('+7921222222');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"query ($id: ID) { User(id: $id) { firstName lastName email phone } }\",\n  \"variables\": {\"id\": \"{{userId}}\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d39010a2-3daf-475e-8918-2c116c2c7936",
+						"exec": [
+							"pm.test(\"Should delete user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.DeleteUser).to.be.an('object');",
+							"    pm.expect(jsonData.data.DeleteUser.id).to.equal(pm.environment.get(\"userId\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"mutation ($id: ID!) { DeleteUser(id: $id) { id } }\",\n  \"variables\": {\n  \t\"id\": \"{{userId}}\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check deleted user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d24a4ec-68f6-4f61-a6c5-e9946c67e331",
+						"exec": [
+							"pm.test(\"Should not find deleted user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.User.length).to.eql(0);",
+							"    pm.environment.set(\"userId\", null);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"query ($id: ID) { User(id: $id) { firstName lastName email phone } }\",\n  \"variables\": {\"id\": \"{{userId}}\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check user created by Job",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9d794426-9cc4-4948-bdee-7034bf6f9661",
+						"exec": [
+							"pm.test(\"Should find user created by Job\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.User.length).to.eql(1);",
+							"    let user = jsonData.data.User[0]; ",
+							"    pm.expect(user.firstName).to.eql('jobFirstName');",
+							"    pm.expect(user.lastName).to.eql('jobLastName');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\":\"query ($id: ID) { User(id: $id) { firstName lastName email phone } }\",\n  \"variables\": {\"id\": \"1\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

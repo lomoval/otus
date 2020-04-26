@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: neo4j
+  labels:
+    app: neo4j
+spec:
+  type: NodePort
+  ports:
+   - name: neo4jbrowser
+     port: 7474
+     targetPort: 7474
+   - name: neo4jbolt
+     port: 7687  
+     targetPort: 7687
+  selector:
+    app: neo4j
+ 
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: neo4j-statefulset
+spec:
+  serviceName: "neo4j"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neo4j
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      containers:
+      - name: neo4jgraph
+        image: neo4j:3.5.16
+        ports:
+        - containerPort: 7474
+          name: neo4jbrowser
+        - containerPort: 7687
+          name: neo4jbolt  
+        env:
+          - name: NEO4J_AUTH
+            value: neo4j/test  
+        volumeMounts:
+        - name: neo4jgraph
+          mountPath: /data
+          subPath: neo4j/data
+  volumeClaimTemplates:
+  - metadata:
+      name: neo4jgraph
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 0.2Gi

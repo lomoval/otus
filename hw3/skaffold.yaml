@@ -1,0 +1,15 @@
+apiVersion: skaffold/v2alpha4
+kind: Config
+metadata:
+  name: configuration
+build:
+  artifacts:
+  - image:  alanlom/users-service
+    context: server
+deploy:
+  kubectl:
+    manifests:
+    - deployment.yaml
+    - service.yaml
+    - config.yaml
+    - ingress.yaml

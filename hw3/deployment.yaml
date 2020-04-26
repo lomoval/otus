@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: users-service-deployment
+spec:
+    replicas: 1
+    strategy:
+      type: Recreate
+    revisionHistoryLimit: 0  
+    selector:
+       matchLabels:
+          app: users-service-deployment
+    template:
+       metadata:
+          labels:
+             app: users-service-deployment
+       spec:
+          containers:
+          - name: users-service
+            image: alanlom/users-service:1.0
+            env:
+              - name: NEO4J_BOLT_URI
+                valueFrom:
+                  configMapKeyRef:
+                    name: users-service-config
+                    key: NEO4J_BOLT_URI
+              - name: NEO4J_USER
+                valueFrom:
+                  configMapKeyRef:
+                    name: users-service-config
+                    key: NEO4J_USER
+              - name: NEO4J_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: users-service-secret
+                    key: NEO4J_PASSWORD
+            ports:
+              - name: graphql
+                containerPort: 4000
