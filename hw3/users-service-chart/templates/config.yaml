@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: users-service-config
 data:
-  NEO4J_BOLT_URI: {{ printf "bolt://%s" .Values.externalNeo4j.neo4jhost }}
+  NEO4J_BOLT_URI: {{ printf "bolt://%s" (include "neo4j.fullname" .) }}
   NEO4J_USER: {{ printf "%s" .Values.externalNeo4j.neo4juser }}
 ---
 apiVersion: v1

@@ -85,4 +85,4 @@ spec:
           command: [node, "migrator.js"]
   backoffLimit: 0  
   
-  #'neo4j-client --insecure -u $NEO4J_USER -p $NEO4J_PASSWORD $NEO4J_BOLT_URI -e "MERGE (user:User{firstName:'jobFirstName', lastName:'jobLastName'})"'
+  #'neo4j-client --non-interactive --insecure -u $NEO4J_USER -p $NEO4J_PASSWORD $NEO4J_BOLT_URI -e "MERGE (user:User{firstName:'jobFirstName', lastName:'jobLastName'})"'

@@ -22,15 +22,15 @@ service:
 externalNeo4j:
   neo4juser: neo4j
   neo4jpassword: test
-  neo4jhost: 'users-service-neo4j'
   neo4jport: 7687
 
+# For dependency chart
 neo4j:
+  serviceName: neo4j
   image: neo4j
   imageTag: '3.5.16'
   authEnabled: true
   neo4jPassword: test
-  neo4j-password: test
   core:
     numberOfServers: 1
     persistentVolume.size: 0.2Gi
