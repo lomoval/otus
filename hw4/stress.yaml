@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stress-test-job
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: stress-test-job
+          image: alanlom/otus-utils:1.0
+          env:
+            - name: INGRESS_URL
+              value: http://nginx-nginx-ingress-controller/
+            - name: APP_HOST_HEADER
+              value: "HOST: arch.homework"
+            - name: APP_PATH
+              value: otusapp/
+          command: ["./stress.sh"]
+  backoffLimit: 0  
