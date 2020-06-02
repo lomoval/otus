@@ -1,0 +1,88 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: neo4j-job
+  ##{{ include "users-service-chart.fullname" . }}
+  labels:
+    {{- include "users-service-chart.labels" . | nindent 4 }}  
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ include "users-service-chart.fullname" . }}
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: check-db-ready
+          image: alanlom/neo4j-client:1.0
+          env:
+            - name: NEO4J_BOLT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_BOLT_URI
+            - name: NEO4J_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_USER
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: users-service-secret
+                  key: NEO4J_PASSWORD
+          # command:
+          #   - sh
+          #   - "-c"
+          #   - |
+          #     until node migrator.js; 
+          #     do echo waiting for graphdb; sleep 2; done;
+          command: [node, "checker.js"]
+      containers:
+        - name: post-install-job
+          image: alanlom/neo4j-client:1.0
+          env:
+            - name: NEO4J_BOLT_LOGIN_URI
+              valueFrom:
+                secretKeyRef:
+                  name: users-service-secret
+                  key: NEO4J_BOLT_LOGIN_URI        
+            - name: NEO4J_BOLT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_BOLT_URI
+            - name: NEO4J_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_USER
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: users-service-secret
+                  key: NEO4J_PASSWORD
+          # command: 
+          #   - sh
+          #   - "-c"
+          #   - |
+          #     neo4jclient --version <<'EOF'--version EOF
+          # command: ["/bin/bash","-c","neo4jclient -h && echo 'here' && ls /"] 
+          # command: ["neo4jclient"]
+          # args: ["-h"] 
+          # command: ["/bin/sh","-c"]
+          # args: ["neo4jclient -h;"]
+          # command: ["/bin/sh","-c"]
+          command: [node, "migrator.js"]
+  backoffLimit: 5  
+  
+  #'neo4j-client --non-interactive --insecure -u $NEO4J_USER -p $NEO4J_PASSWORD $NEO4J_BOLT_URI -e "MERGE (user:User{firstName:'jobFirstName', lastName:'jobLastName'})"'

@@ -1,0 +1,731 @@
+{
+	"info": {
+		"_postman_id": "7e56e603-d7fd-4514-8c46-4c53eab8a4a3",
+		"name": "api-gateway-auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Registration user-1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7e936c39-7dc5-42fb-9404-c1dc44238ce6",
+						"exec": [
+							"pm.collectionVariables.set(\"password\", pm.variables.replaceIn('{{$randomPassword}}')),",
+							"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}')),",
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}')),",
+							"pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomLastName}}'))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "88776968-5d9f-44f8-ac1e-e44d663789b4",
+						"exec": [
+							"pm.test(\"Should create user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.CreateUser).to.be.an('object');",
+							"    let user = jsonData.data.CreateUser;",
+							"    pm.expect(user.firstName).to.eql(pm.collectionVariables.get('firstName'));",
+							"    pm.expect(user.lastName).to.eql(pm.collectionVariables.get('lastName'));",
+							"    pm.expect(user.email).to.eql(pm.collectionVariables.get('email'));",
+							"    pm.expect(user.pnone).to.eql(undefined);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreateUser($password: String! $lastName: String! $firstName: String! $email: ID!) {\n  CreateUser(email: $email password: $password firstName: $firstName lastName: $lastName) {\n    email\n    lastName\n    firstName\n  }\n}",
+						"variables": "{\n\t\"firstName\": \"{{firstName}}\",\n\t\"lastName\": \"{{lastName}}\",\n\t\"email\": \"{{email}}\",\n\t\"phone\": \"{{phone}}\",\n\t\"password\": \"{{password}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user-1 without login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9f797b4d-087c-407c-9525-6b62e851cb88",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f2d833ee-9035-4bdd-b277-e8c9e0a1514d",
+						"exec": [
+							"pm.test(\"Should failed to get user-1 without login\", function () {",
+							"    pm.response.to.have.status(401);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query User($email: ID!) {\n  User(email: $email) {\n    email\n  }\n}",
+						"variables": "{\n\t\"email\": \"{{email}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user-1 without login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3f56c8f7-a96e-49fa-b85b-67ace37f9f94",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "38cc23a8-0156-4dda-9340-42436d2f3c17",
+						"exec": [
+							"pm.test(\"Should failed to update user-1 without login\", function () {",
+							"    pm.response.to.have.status(401);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation UpdateUser($password: String! $lastName: String! $firstName: String! $email: String! $phone: String) {\n  UpdateUser(email: $email password: $password firstName: $firstName lastName: $lastName phone: $phone) {\n    email\n  }\n}",
+						"variables": "{\n\t\"fisrtName\": \"{{firstName}}\",\n\t\"lastName\": \"{{lastName}}\",\n\t\"email\": \"{{email}}\",\n\t\"phone\": \"{{phone}}\",\n\t\"pass1word\": \"{{password}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user-1 without login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f687a429-8d4c-4c9c-9004-ce28c7a785a2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "76164265-a454-421c-8955-e2707d70aab2",
+						"exec": [
+							"pm.test(\"Should failed to delete user-1 without login\", function () {",
+							"    pm.response.to.have.status(401);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation DeleteUser($password: String! $lastName: String! $firstName: String! $email: String! $phone: String) {\n  DeleteUser(email: $email password: $password firstName: $firstName lastName: $lastName phone: $phone) {\n    email\n  }\n}",
+						"variables": "{\n\t\"fisrtName\": \"{{firstName}}\",\n\t\"lastName\": \"{{lastName}}\",\n\t\"email\": \"{{email}}\",\n\t\"phone\": \"{{phone}}\",\n\t\"pass1word\": \"{{password}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login user-1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bb15366a-bbb2-4fb0-8c94-51ef984b5607",
+						"exec": [
+							"pm.test(\"Should login user-1\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{email}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user-1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0be699c6-15c5-4b01-a594-3a37971332b9",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "db2690de-3778-4a75-887d-85adc44a8fc3",
+						"exec": [
+							"pm.test(\"Should update user-1\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.UpdateUser).to.be.an('object');",
+							"    let user = jsonData.data.UpdateUser;",
+							"    pm.expect(user.firstName).to.eql(pm.collectionVariables.get('firstName'));",
+							"    pm.expect(user.lastName).to.eql(pm.collectionVariables.get('lastName'));",
+							"    pm.expect(user.email).to.eql(pm.collectionVariables.get('email'));",
+							"    pm.expect(user.phone).to.eql(\"+7999999999\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation UpdateUser($email: ID! $phone: String) {\n  UpdateUser(email: $email phone: $phone) {\n    firstName\n    lastName\n    email\n    phone\n  }\n}",
+						"variables": "{\n\t\"email\": \"{{email}}\",\n\t\"phone\": \"+7999999999\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user-1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user-1 after logout",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6fc9a3f-a02a-48cd-8f00-c47d67213850",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cd9e111f-89a7-41cc-89fc-9aff0498e131",
+						"exec": [
+							"pm.test(\"Should failed to get user-1 after logout\", function () {",
+							"    pm.response.to.have.status(401);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query User($email: ID!) {\n  User(email: $email) {\n    email\n  }\n}",
+						"variables": "{\n\t\"email\": \"{{email}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registration user-2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1120288-41a3-4b9d-afaf-2ef97f03a2e5",
+						"exec": [
+							"pm.collectionVariables.set(\"password2\", pm.variables.replaceIn('{{$randomPassword}}')),",
+							"pm.collectionVariables.set(\"email2\", pm.variables.replaceIn('{{$randomEmail}}')),",
+							"pm.collectionVariables.set(\"firstName2\", pm.variables.replaceIn('{{$randomFirstName}}')),",
+							"pm.collectionVariables.set(\"lastName2\", pm.variables.replaceIn('{{$randomLastName}}'))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2ef2e5de-0f4b-4860-bf90-1a36b7de679b",
+						"exec": [
+							"pm.test(\"Should create user-2\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.CreateUser).to.be.an('object');",
+							"    let user = jsonData.data.CreateUser;",
+							"    pm.expect(user.firstName).to.eql(pm.collectionVariables.get('firstName2'));",
+							"    pm.expect(user.lastName).to.eql(pm.collectionVariables.get('lastName2'));",
+							"    pm.expect(user.email).to.eql(pm.collectionVariables.get('email2'));",
+							"    pm.expect(user.pnone).to.eql(undefined);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreateUser($password: String! $lastName: String! $firstName: String! $email: ID!) {\n  CreateUser(email: $email password: $password firstName: $firstName lastName: $lastName) {\n    email\n    lastName\n    firstName\n  }\n}",
+						"variables": "{\n\t\"firstName\": \"{{firstName2}}\",\n\t\"lastName\": \"{{lastName2}}\",\n\t\"email\": \"{{email2}}\",\n\t\"phone\": \"{{phone2}}\",\n\t\"password\": \"{{password2}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login user-2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6e31b58b-f316-449f-b988-ce803a85b175",
+						"exec": [
+							"pm.test(\"Should login for user-2\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{email2}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password2}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user-2 after login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "69b2fe36-f6cb-4a57-ae71-29acdbea548a",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cd8f2c7e-6e3d-4078-8c57-370fbea15db1",
+						"exec": [
+							"pm.test(\"Should create user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.User).to.be.an('array');",
+							"    let user = jsonData.data.User[0];",
+							"    pm.expect(user.firstName).to.eql(pm.collectionVariables.get('firstName2'));",
+							"    pm.expect(user.lastName).to.eql(pm.collectionVariables.get('lastName2'));",
+							"    pm.expect(user.email).to.eql(pm.collectionVariables.get('email2'));",
+							"    pm.expect(user.pnone).to.eql(undefined);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query User($email: ID!) {\n  User(email: $email) {\n    email\n    firstName\n    lastName\n    phone\n  }\n}",
+						"variables": "{\n\t\"email\": \"{{email2}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user-1 by user-2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b132f1a2-cbb9-4f74-a119-c60452b13de1",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "faded67d-4bf7-4689-8c12-5f73a34ca8dd",
+						"exec": [
+							"pm.test(\"Should faild to get other user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errors).to.be.an('array');",
+							"    let error = jsonData.errors[0];",
+							"    pm.expect(error.extensions.code).to.eql('UNAUTHENTICATED');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query User($email: ID!) {\n  User(email: $email) {\n    email\n    firstName\n    lastName\n    phone\n  }\n}",
+						"variables": "{\n\t\"email\": \"{{email}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user-1 by user-2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "adbf4aaa-9bf3-41a3-be0f-456f5c6fdb7e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "106f3dd8-acee-45b4-b358-28d2c370e71c",
+						"exec": [
+							"pm.test(\"Should faild to update other user\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errors).to.be.an('array');",
+							"    let error = jsonData.errors[0];",
+							"    pm.expect(error.extensions.code).to.eql('UNAUTHENTICATED');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation UpdateUser($lastName: String! $firstName: String! $email: ID!) {\n  UpdateUser(email: $email firstName: $firstName lastName: $lastName) {\n    email\n  }\n}",
+						"variables": "{\n\t\"email\": \"{{email}}\",\n\t\"firstName\": \"{{firstName2}}\",\n\t\"lastName\": \"{{lastName2}}\",\n\t\"password\": \"{{password2}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user-2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "85814783-3216-4087-ac9e-9019a886c324",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "59a44326-3480-44b8-89d6-c480f29060b0",
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + (('data' in request) ? request['data'] : '') ] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "56c8b489-5fc0-488d-a968-e9dff550957d",
+			"key": "baseUrl",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"id": "f5c537fe-6ec6-4d05-b001-f511f0e9d9c4",
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "ff30d54f-f137-4339-ad0a-8f1759ecf853",
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8a1d0fda-c7de-4e47-ae5e-ea893e8bcf32",
+			"key": "lastName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "6bacffda-7d0c-4a26-bdb2-1dde78acc894",
+			"key": "firstName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "f37d91bb-099b-4899-ab9d-0bf891d93296",
+			"key": "password2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "045c7979-45d8-4119-84c5-1802f7cafcb8",
+			"key": "email2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1c5cd350-f4f0-4148-92a6-aca62d6916fc",
+			"key": "lastName2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "a647f985-8601-4337-8e80-b5e66279cf74",
+			"key": "firstName2",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

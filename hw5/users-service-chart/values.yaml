@@ -1,0 +1,46 @@
+# Default values for users-service-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+revisionHistoryLimit: 0
+
+# nameOverride: "over"
+
+ingress:
+  host: arch.homework
+  path: /($|/)(.*)
+
+image:
+  repository: alanlom/users-service
+  pullPolicy: IfNotPresent
+  tag: "hw5"
+
+images:
+  authService:
+    repository: alanlom/auth-service
+    pullPolicy: IfNotPresent
+    tag: "hw5"
+
+names:
+  authService: "auth-service"
+
+service:
+  type: NodePort
+  port: 4000
+
+externalNeo4j:
+  neo4juser: neo4j
+  neo4jpassword: test
+  neo4jport: 7687
+
+# For dependency chart
+neo4j:
+  serviceName: neo4j
+  image: neo4j
+  imageTag: '3.5.16'
+  authEnabled: true
+  neo4jPassword: test
+  core:
+    numberOfServers: 1
+    persistentVolume.size: 0.2Gi

@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "users-service-chart.fullname" . }}
+  labels:
+    {{- include "users-service-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "users-service-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        {{- include "users-service-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: NEO4J_BOLT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_BOLT_URI
+            - name: NEO4J_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_USER
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: users-service-secret
+                  key: NEO4J_PASSWORD
+          ports:
+            - name: graphql
+              containerPort: 4000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /?query={Health}
+              port: graphql
+          readinessProbe:
+            httpGet:
+              path: /.well-known/apollo/server-health
+              port: graphql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "auth-service.fullname" . }}
+  labels:
+    {{- include "users-service-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      name: auth-service
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        name: auth-service
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.images.authService.repository }}:{{ .Values.images.authService.tag | default .Chart.AppVersion }}"
+          env:
+            - name: NEO4J_BOLT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_BOLT_URI
+            - name: NEO4J_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: users-service-config
+                  key: NEO4J_USER
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: users-service-secret
+                  key: NEO4J_PASSWORD
+          ports:
+            - name: graphql
+              containerPort: 4000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /?query={Health}
+              port: graphql
+          readinessProbe:
+            httpGet:
+              path: /?query={Health}
+              port: graphql
