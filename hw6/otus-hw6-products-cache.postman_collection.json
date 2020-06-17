@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "4e4517fa-4d1d-49a5-b1b9-1c498605edc5",
+		"name": "otus-hw6-products-cache",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Set first cahce",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7bb15b40-5ab1-4bf5-baec-4fc5401068e5",
+						"exec": [
+							"pm.test(\"Should set cache\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.be.an('object');",
+							"    pm.expect(jsonData.errors).to.be.an('undefined');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  CheckCache(value: \"cache1\")\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check first cache value",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a7d0ee99-ec6b-4119-ab6c-661d05fe8ae1",
+						"exec": [
+							"pm.test(\"Should get first cached value\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.be.an('object');",
+							"    pm.expect(jsonData.data.CheckCache).to.eql('cache1');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  CheckCache(value: \"cache2\")\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check second cache value",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "19f9b089-77d7-4dde-90ae-074379fdb997",
+						"exec": [
+							"pm.test(\"Should get second cached value\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.be.an('object');",
+							"    pm.expect(jsonData.data.CheckCache).to.eql('cache2');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  CheckCache(value: \"cache3\")\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "aebc824f-dbe5-4e09-8fa3-1e465439509e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6e866680-7e68-459f-b414-53074d3aa009",
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + (('data' in request) ? request['data'] : '') ] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "51e30220-b964-4295-b76f-fadf72d6e560",
+			"key": "baseUrl",
+			"value": "http://arch.homework",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

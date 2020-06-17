@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "memcache.fullname" . }}
+  labels:
+    {{- include "users-service-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      name: {{ include "memcache.fullname" . }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        name: {{ include "memcache.fullname" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.images.memcache.repository }}{{ .Values.images.memcache.tag }}"
+          ports:
+            - name: memcache
+              containerPort: 11211
+              protocol: TCP
+

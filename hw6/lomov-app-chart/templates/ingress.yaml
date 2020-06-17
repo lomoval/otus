@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "users-service-chart.fullname" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+#    nginx.ingress.kubernetes.io/auth-url: "http://{{ include "auth-service.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:4000/auth"
+#     nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin"  
+#    nginx.ingress.kubernetes.io/auth-response-headers: "X-User,X-Email,X-UserId,X-First-Name,X-Last-Name"
+spec:
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+        - path: {{ .Values.ingress.path }}
+          backend:
+            serviceName: {{ include "users-service-chart.fullname" . }}
+            servicePort: {{ .Values.service.port }}

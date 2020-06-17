@@ -1,0 +1,344 @@
+{
+	"info": {
+		"_postman_id": "20a846e6-68a2-4435-aa63-42f999831123",
+		"name": "otus-hw6-products",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "31f01bd8-53d9-43e1-afc5-39e954c7fb3f",
+						"exec": [
+							"pm.test(\"Should create product\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.CreateProduct).to.be.an('object');",
+							"    pm.expect(jsonData.errors).to.be.an('undefined');",
+							"    let product = jsonData.data.CreateProduct;",
+							"    pm.expect(product.title).to.eql(pm.collectionVariables.get('title'));",
+							"    pm.expect(product.description).to.eql(pm.collectionVariables.get('description'));",
+							"    pm.expect(product.length).to.eql(parseFloat(pm.collectionVariables.get('length')));",
+							"    pm.expect(product.width).to.eql(parseFloat(pm.collectionVariables.get('width')));",
+							"    pm.expect(product.weight).to.eql(parseFloat(pm.collectionVariables.get('weight')));",
+							"    pm.expect(product.price).to.eql(parseFloat(pm.collectionVariables.get('price')));",
+							"    pm.collectionVariables.set('productId', product.id);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreateProduct(\n    $title: String!\n    $description: String\n    $height: Float\n    $length: Float\n    $width: Float\n    $weight: Float\n    $price: Float) {\n    CreateProduct(\n        title: $title \n        description: $description \n        height: $height \n        length: $length \n        width: $width \n        weight: $weight\n        price: $price) {\n  id\n  title\n  description\n  height\n  length\n  width\n  weight\n  price\n    }\n}\n",
+						"variables": "{\n\t\"title\": \"{{title}}\",\n\t\"description\": \"{{description}}\",\n\t\"height\": {{height}},\n\t\"length\": {{length}},\n\t\"width\": {{width}},\n\t\"weight\": {{weight}},\n\t\"price\": {{price}}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d78cccc-9455-4790-80d2-b852c3ff9454",
+						"exec": [
+							"pm.test(\"Should get product\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.Product).to.be.an('array');",
+							"    pm.expect(jsonData.data.Product.length).to.eql(1);",
+							"    pm.expect(jsonData.errors).to.be.an('undefined');",
+							"    let product = jsonData.data.Product[0];",
+							"    pm.expect(product.id).to.eql(pm.collectionVariables.get('productId'));",
+							"    pm.expect(product.title).to.eql(pm.collectionVariables.get('title'));",
+							"    pm.expect(product.description).to.eql(pm.collectionVariables.get('description'));",
+							"    pm.expect(product.length).to.eql(parseFloat(pm.collectionVariables.get('length')));",
+							"    pm.expect(product.width).to.eql(parseFloat(pm.collectionVariables.get('width')));",
+							"    pm.expect(product.weight).to.eql(parseFloat(pm.collectionVariables.get('weight')));",
+							"    pm.expect(product.price).to.eql(parseFloat(pm.collectionVariables.get('price')));",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Product($id: ID) {\n  Product(id: $id) {\n    id\n    title\n    description\n    height\n    length\n    width\n    weight\n    price\n  }\n}\n",
+						"variables": "{\n\t\"id\": \"{{productId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c20f083-a71d-4de9-a418-2d980384b9d5",
+						"exec": [
+							"pm.test(\"Should update product\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.UpdateProduct).to.be.an('object');",
+							"    pm.expect(jsonData.errors).to.be.an('undefined');",
+							"    let product = jsonData.data.UpdateProduct;",
+							"    pm.expect(product.title).to.eql(pm.collectionVariables.get('updTitle'));",
+							"    pm.expect(product.description).to.eql(pm.collectionVariables.get('updDescription'));",
+							"    pm.expect(product.length).to.eql(parseFloat(pm.collectionVariables.get('updLength')));",
+							"    pm.expect(product.width).to.eql(parseFloat(pm.collectionVariables.get('updWidth')));",
+							"    pm.expect(product.weight).to.eql(parseFloat(pm.collectionVariables.get('updWeight')));",
+							"    pm.expect(product.price).to.eql(parseFloat(pm.collectionVariables.get('updPrice')));",
+							"    pm.collectionVariables.set('productId', product.id);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation UpdateProduct(\n    $id: ID!\n    $title: String!\n    $description: String\n    $height: Float\n    $length: Float\n    $width: Float\n    $weight: Float\n    $price: Float) {\n    UpdateProduct(\n        id: $id\n        title: $title \n        description: $description \n        height: $height \n        length: $length \n        width: $width \n        weight: $weight\n        price: $price) {\n  id\n  title\n  description\n  height\n  length\n  width\n  weight\n  price\n    }\n}\n",
+						"variables": "{\n\t\"id\": \"{{productId}}\",\n\t\"title\": \"{{updTitle}}\",\n\t\"description\": \"{{updDescription}}\",\n\t\"height\": {{updHeight}},\n\t\"length\": {{updLength}},\n\t\"width\": {{updWidth}},\n\t\"weight\": {{updWeight}},\n\t\"price\": {{updPrice}}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b833ddb9-b1a4-4073-95a4-84112632db51",
+						"exec": [
+							"pm.test(\"Should delete product\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.DeleteProduct).to.be.an('object');",
+							"    pm.expect(jsonData.errors).to.be.an('undefined');",
+							"    let product = jsonData.data.DeleteProduct;",
+							"    pm.collectionVariables.set('productId', product.id);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation DeleteProduct($id: ID!) {\n    DeleteProduct(id: $id) {\n  id\n    }\n}\n",
+						"variables": "{\n\t\"id\": \"{{productId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get deleted product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6ec31550-bba4-49d6-90cf-7f9c14130592",
+						"exec": [
+							"pm.test(\"Should not get deleted product\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.Product).to.be.an('array');",
+							"    pm.expect(jsonData.data.Product.length).to.eql(0);",
+							"    pm.expect(jsonData.errors).to.be.an('undefined');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Product($id: ID) {\n  Product(id: $id) {\n    id\n    title\n    description\n    height\n    length\n    width\n    weight\n    price\n  }\n}\n",
+						"variables": "{\n\t\"id\": \"{{productId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "428ab9c9-1351-4118-9a11-5d930e4582f9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4b5d2904-ca68-4694-93ee-fa2cdc20c3c5",
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + (('data' in request) ? request['data'] : '') ] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "c03d8a76-6ba9-4636-bff5-0ddb21c43575",
+			"key": "baseUrl",
+			"value": "http://arch.homework",
+			"type": "string"
+		},
+		{
+			"id": "96b71d34-6b97-492a-9941-fc1f27e9a1de",
+			"key": "title",
+			"value": "TestTitle",
+			"type": "string"
+		},
+		{
+			"id": "c1533fcb-3ea6-4f6b-b7b8-9cab8d0eae8f",
+			"key": "description",
+			"value": "TestDescription",
+			"type": "string"
+		},
+		{
+			"id": "9f22933e-0f9d-4d23-b4b9-fee40c6a6fd1",
+			"key": "height",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"id": "c55b0167-eb9a-468a-8878-097576536bb5",
+			"key": "length",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"id": "a4118240-a9da-423c-be71-e495c5fed2ef",
+			"key": "width",
+			"value": "3",
+			"type": "string"
+		},
+		{
+			"id": "7e7ed360-b74e-433b-8e5c-387628c9525f",
+			"key": "price",
+			"value": "4",
+			"type": "string"
+		},
+		{
+			"id": "151b1641-fd5d-4456-8031-63b7bc24fba5",
+			"key": "productId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "e32d4b43-55a5-4487-94bb-f3bd79abe540",
+			"key": "weight",
+			"value": "5",
+			"type": "string"
+		},
+		{
+			"id": "c94c261e-3298-404e-b172-2a66fbb9c914",
+			"key": "updTitle",
+			"value": "updTestTitle",
+			"type": "string"
+		},
+		{
+			"id": "c27a26b2-5dba-4194-8ef8-93b3474e0261",
+			"key": "updDescription",
+			"value": "updTestDescription",
+			"type": "string"
+		},
+		{
+			"id": "715eae99-32a2-466c-8ae9-606599cd2b96",
+			"key": "updHeight",
+			"value": "10",
+			"type": "string"
+		},
+		{
+			"id": "32063273-755c-4b11-99d0-27af31e52d85",
+			"key": "updLength",
+			"value": "11",
+			"type": "string"
+		},
+		{
+			"id": "6e186f92-70a1-4b03-af41-8aa594e88554",
+			"key": "updWidth",
+			"value": "12",
+			"type": "string"
+		},
+		{
+			"id": "7b792cf1-d760-42b1-b1e4-eaf068313e1d",
+			"key": "updPrice",
+			"value": "13",
+			"type": "string"
+		},
+		{
+			"id": "ab5ae39c-d0fa-4f91-863c-c4c251d4946b",
+			"key": "updWeight",
+			"value": "14",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
