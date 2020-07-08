@@ -1,0 +1,3 @@
+Method,Name,Error,Occurrences
+POST,/,503 Server Error: Service Temporarily Unavailable for url: http://arch.homework/,1415
+POST,/,502 Server Error: Bad Gateway for url: http://arch.homework/,626

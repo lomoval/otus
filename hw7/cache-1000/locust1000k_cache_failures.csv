@@ -1,0 +1,5 @@
+Method,Name,Error,Occurrences
+POST,/,503 Server Error: Service Temporarily Unavailable for url: http://arch.homework/,8766
+POST,/,504 Server Error: Gateway Time-out for url: http://arch.homework/,359
+POST,/,"('Connection broken: IncompleteRead(0 bytes read)', IncompleteRead(0 bytes read))",33
+POST,/,502 Server Error: Bad Gateway for url: http://arch.homework/,1920

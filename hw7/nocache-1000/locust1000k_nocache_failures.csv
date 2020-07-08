@@ -1,0 +1,3 @@
+Method,Name,Error,Occurrences
+POST,/,504 Server Error: Gateway Time-out for url: http://arch.homework/,2166
+POST,/,502 Server Error: Bad Gateway for url: http://arch.homework/,1

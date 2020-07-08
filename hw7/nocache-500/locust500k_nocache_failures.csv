@@ -1,0 +1,7 @@
+Method,Name,Error,Occurrences
+POST,/,503 Server Error: Service Temporarily Unavailable for url: http://arch.homework/,300
+POST,/,"('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))",1
+POST,/,504 Server Error: Gateway Time-out for url: http://arch.homework/,1681
+POST,/,"HTTPConnectionPool(host='arch.homework', port=80): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x106d8e350>: Failed to establish a new connection: [Errno 61] Connection refused'))",3370
+POST,/,"('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",8
+POST,/,502 Server Error: Bad Gateway for url: http://arch.homework/,493
